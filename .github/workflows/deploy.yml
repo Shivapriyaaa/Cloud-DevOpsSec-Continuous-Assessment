@@ -2,16 +2,19 @@ name: CI/CD to Elastic Beanstalk
 
 on:
   push:
-    branches: [ "main" ]   # change if your default branch is different
+    branches: [ "main" ]   # change if default branch is different
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      EB_APPLICATION_NAME: ${{ secrets.EB_APPLICATION_NAME }}
-      EB_ENVIRONMENT_NAME: ${{ secrets.EB_ENVIRONMENT_NAME }}
+      AWS_REGION:            ${{ secrets.AWS_REGION }}
+      EB_APPLICATION_NAME:   ${{ secrets.EB_APPLICATION_NAME }}
+      EB_ENVIRONMENT_NAME:   ${{ secrets.EB_ENVIRONMENT_NAME }}
+      AWS_ACCESS_KEY_ID:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN:     ${{ secrets.AWS_SESSION_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -20,14 +23,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"   # match your EB platform version
+          python-version: "3.12"   # match your EB platform
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Optional but recommended: run Django tests before deploy
       - name: Run Django tests
         env:
           SECRET_KEY: "test-secret-key"
@@ -46,8 +48,9 @@ jobs:
         with:
           aws_access_key:      ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key:      ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region:              ${{ secrets.AWS_REGION }}
+          aws_session_token:   ${{ secrets.AWS_SESSION_TOKEN }}
           application_name:    ${{ secrets.EB_APPLICATION_NAME }}
           environment_name:    ${{ secrets.EB_ENVIRONMENT_NAME }}
           version_label:       "build-${{ github.run_number }}"
+          region:              ${{ secrets.AWS_REGION }}
           deployment_package:  "deploy.zip"
