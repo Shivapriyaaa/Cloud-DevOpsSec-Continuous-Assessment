@@ -1,12 +1,16 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "dev-secret-key-change-me"
+# Security: Use environment variable for SECRET_KEY in production
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-me-in-production")
 
-DEBUG = True
+# Debug mode: Set to False in production
+DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS: list[str] = []
+# Allowed hosts: Set via environment variable in production
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") if os.environ.get("ALLOWED_HOSTS") else []
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -49,12 +53,28 @@ TEMPLATES = [
 WSGI_APPLICATION = "blogsite.wsgi.application"
 ASGI_APPLICATION = "blogsite.asgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Database configuration
+# Use PostgreSQL in production (Elastic Beanstalk), SQLite for local development
+if "RDS_DB_NAME" in os.environ:
+    # Production: Use RDS PostgreSQL
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ["RDS_DB_NAME"],
+            "USER": os.environ["RDS_USERNAME"],
+            "PASSWORD": os.environ["RDS_PASSWORD"],
+            "HOST": os.environ["RDS_HOSTNAME"],
+            "PORT": os.environ["RDS_PORT"],
+        }
     }
-}
+else:
+    # Development: Use SQLite
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -68,8 +88,13 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Media files (if you add file uploads later)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
