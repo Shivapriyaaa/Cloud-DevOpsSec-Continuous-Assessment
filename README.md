@@ -39,7 +39,7 @@ What'sToday is a modern, dynamic cloud-based blogging platform built with Django
 - **Database**: SQLite (development), PostgreSQL (production-ready)
 - **Frontend**: HTML5, CSS3, Bootstrap 5
 - **Language**: Python 3.13
-- **Architecture**: Model-View-Template (MVT) pattern
+- **Architecture**: Model-View-Template (MVT) pattern.
 
 ## 📋 Prerequisites
 
@@ -297,4 +297,5 @@ Edit `static/css/styles.css` to customize the orange and white color scheme:
 ---
 
 **Built with ❤️ using Django and Bootstrap**
+
 
