@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile | Orange Blog{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title mb-3">Update your profile</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-orange" type="submit">Save changes</button>
+            <a class="btn btn-outline-secondary" href="{% url 'profile_detail' user.username %}">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

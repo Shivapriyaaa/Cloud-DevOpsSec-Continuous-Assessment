@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Delete Blog | Orange Blog{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Delete blog</h4>
+        <p class="mb-4">Are you sure you want to delete "<strong>{{ post.title }}</strong>"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Yes, delete</button>
+            <a class="btn btn-outline-secondary" href="{% url 'post_detail' post.pk %}">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

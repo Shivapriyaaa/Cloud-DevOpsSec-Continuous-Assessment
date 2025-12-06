@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Sign Up | Orange Blog{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title mb-3">Create your account</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="btn btn-orange w-100" type="submit">Sign up</button>
+                </form>
+                <p class="mt-3 text-center text-muted">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

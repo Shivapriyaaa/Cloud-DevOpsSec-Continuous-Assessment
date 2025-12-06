@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} Blog | Orange Blog{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title mb-3">{{ action }} blog</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-orange" type="submit">{{ action }}</button>
+            <a class="btn btn-outline-secondary" href="{% url 'home' %}">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+

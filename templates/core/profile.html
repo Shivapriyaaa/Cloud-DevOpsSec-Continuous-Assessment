@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.username }} | Profile{% endblock %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body d-flex justify-content-between align-items-start">
+        <div>
+            <h3 class="mb-1">{{ profile_user.username }}</h3>
+            <p class="text-muted mb-2">Joined {{ profile.created_at|date:"M Y" }}</p>
+            {% if profile.bio %}<p class="mb-2">{{ profile.bio|linebreaks }}</p>{% endif %}
+            <div class="text-muted small">
+                {% if profile.location %}📍 {{ profile.location }} &nbsp;{% endif %}
+                {% if profile.website %}🔗 <a class="text-decoration-none" href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>{% endif %}
+            </div>
+            <div class="mt-3">
+                <span class="badge bg-orange badge-pill text-white">Followers: {{ profile.followers.count }}</span>
+                <span class="badge bg-light text-dark border badge-pill">Following: {{ profile.following.count }}</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            {% if is_self %}
+                <a class="btn btn-orange" href="{% url 'profile_edit' %}">Edit profile</a>
+                <a class="btn btn-outline-danger" href="{% url 'profile_delete' %}">Delete profile</a>
+            {% else %}
+                <form method="post" action="{% url 'toggle_follow' profile_user.username %}">
+                    {% csrf_token %}
+                    {% if is_following %}
+                        <button class="btn btn-outline-secondary" type="submit">Unfollow</button>
+                    {% else %}
+                        <button class="btn btn-orange" type="submit">Follow</button>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Feeds by {{ profile_user.username }}</h4>
+    {% if is_self %}
+        <a class="btn btn-orange" href="{% url 'post_create' %}">New blog</a>
+    {% endif %}
+</div>
+
+{% if posts %}
+    <div class="row g-3">
+        {% for post in posts %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title mb-1"><a class="link-orange text-decoration-none" href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h5>
+                                <div class="text-muted small">{{ post.created_at|date:"M j, Y" }}</div>
+                            </div>
+                            {% if is_self %}
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-secondary" href="{% url 'post_update' post.pk %}">Edit</a>
+                                    <a class="btn btn-outline-danger" href="{% url 'post_delete' post.pk %}">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p class="mt-2 mb-0 text-muted small">{{ post.content|truncatewords:30 }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">No posts yet.</p>
+{% endif %}
+{% endblock %}
+
+
