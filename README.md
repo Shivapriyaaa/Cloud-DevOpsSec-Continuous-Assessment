@@ -219,9 +219,9 @@ Copyright © 2025 What'sToday. All rights reserved.
 
 ## 👨‍💻 Author
 
-[Your Name]
-[Student Number]
-National College of Ireland
+Shivapriya
+x24266388@student.ncirl.ie
+
 
 ## 📚 Additional Resources
 
@@ -296,5 +296,6 @@ Edit `static/css/styles.css` to customize the orange and white color scheme:
 
 ---
 
-**Built with ❤️ using Django and Bootstrap**
+**Built with ❤️ by Shivapriya**
+
 
