@@ -40,9 +40,9 @@ jobs:
           printf '%s\n' \
             "branch-defaults:" \
             "  main:" \
-            "    environment: Letstalk-app-env" \
+            "    environment: WhatsToday-env-1" \
             "global:" \
-            "  application_name: letstalk-app" \
+            "  application_name: WhatsToday" \
             "  default_region: ${AWS_REGION}" \
             "  sc: git" \
             > .elasticbeanstalk/config.yml
