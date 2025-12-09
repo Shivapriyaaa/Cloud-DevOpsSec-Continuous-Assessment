@@ -10,11 +10,19 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-me-in-productio
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
 # Allowed hosts: Set via environment variable in production
-ALLOWED_HOSTS = (
+
+# Allowed hosts: Set via environment variable in production
+ALLOWED_HOSTS = ["b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com"]
+
+
+'''ALLOWED_HOSTS = ("http://b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com/"
     os.environ.get("ALLOWED_HOSTS", "").split(",")
     if os.environ.get("ALLOWED_HOSTS")
-    else []
-)
+    else []'''
+CSRF_TRUSTED_ORIGINS = [
+    "https://b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com"
+]
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
