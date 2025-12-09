@@ -1,29 +1,28 @@
 import os
 from pathlib import Path
 
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security: Use environment variable for SECRET_KEY in production
+# SECURITY
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-me-in-production")
-
-# Debug mode: Set to False in production
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
-# Allowed hosts: Set via environment variable in production
+# Allowed hosts
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+if not any(ALLOWED_HOSTS):
+    ALLOWED_HOSTS = [
+        "whatstoday-env-1.eba-uyyaja23.us-east-1.elasticbeanstalk.com",
+        "localhost",
+        "127.0.0.1",
+    ]
 
-# Allowed hosts: Set via environment variable in production
-ALLOWED_HOSTS = ["b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com"]
-
-
-'''ALLOWED_HOSTS = ("http://b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com/"
-    os.environ.get("ALLOWED_HOSTS", "").split(",")
-    if os.environ.get("ALLOWED_HOSTS")
-    else []'''
+# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://b70f1acf57cf4f4db8bd57b002734a96.vfs.cloud9.us-east-1.amazonaws.com"
+    f"https://{host}" for host in ALLOWED_HOSTS if host not in ["localhost", "127.0.0.1"]
 ]
 
-
+# Installed apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -34,9 +33,10 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
 ]
 
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # ← added for static files
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # For static files
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -45,8 +45,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# URL configuration
 ROOT_URLCONF = "blogsite.urls"
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -63,13 +65,13 @@ TEMPLATES = [
     },
 ]
 
+# WSGI & ASGI
 WSGI_APPLICATION = "blogsite.wsgi.application"
 ASGI_APPLICATION = "blogsite.asgi.application"
 
-# Database configuration
-# Use PostgreSQL in production (Elastic Beanstalk), SQLite for local development
+# Database
 if "RDS_DB_NAME" in os.environ:
-    # Production: Use RDS PostgreSQL
+    # Production: PostgreSQL on Elastic Beanstalk
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -81,7 +83,7 @@ if "RDS_DB_NAME" in os.environ:
         }
     }
 else:
-    # Development: Use SQLite
+    # Local development: SQLite
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -89,6 +91,7 @@ else:
         }
     }
 
+# Password validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -96,32 +99,31 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# Static files (CSS, JS)
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        # WhiteNoise storage for compressed & cache-busted static files
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
-
-# Media files (if you add file uploads later)
+# Media files (uploads)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Default primary key field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Authentication redirects
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "login"
+
+# Optional: other security settings
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
