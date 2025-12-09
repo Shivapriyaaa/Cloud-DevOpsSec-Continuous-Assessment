@@ -58,6 +58,12 @@ jobs:
 
       - name: Run migrations on EB
         run: |
-          eb init ${{ secrets.EB_APPLICATION_NAME }} --region ${{ secrets.AWS_REGION }}
+          # Initialize EB non-interactively
+          eb init ${{ secrets.EB_APPLICATION_NAME }} \
+              --region ${{ secrets.AWS_REGION }} \
+              --platform "Python 3.12" \
+              --no-interactive
           eb use ${{ secrets.EB_ENVIRONMENT_NAME }}
+          
+          # Run Django migrations on EB instance
           eb ssh --command "source /var/app/venv/staging-LQM1lest/bin/activate && cd /var/app/current && python manage.py migrate --noinput"
